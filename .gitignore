@@ -216,3 +216,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- reddit-scout: never commit secrets, real data or real exports ---
+config.toml
+*.local.toml
+data/
+exports/
+vault/
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+*.log
+# Real input dumps belong outside Git; only synthetic examples are committed.
+inputs/
+!examples/**

@@ -1,0 +1,61 @@
+# Config used by `reddit-scout demo` (synthetic data only).
+# Copy to config.toml (ignored by Git) and adjust. The program works only with
+# local files and makes no network requests.
+
+[project]
+subreddit = "ScoutDemo"            # without the r/ prefix
+db_path = "data/scout.sqlite3"     # relative to this file; data/ is git-ignored
+
+[period]
+# Publication period. Empty = the previous 12 months (start = today minus 12 months, end = yesterday).
+start = ""                         # YYYY-MM-DD, inclusive
+end = ""                           # YYYY-MM-DD, inclusive
+
+[comments]
+# Optional separate filter on comment dates (empty = no filter).
+start = ""
+end = ""
+
+[retention]
+# Without an API the program learns about deletions on Reddit only from a newer
+# saved copy of a thread (it then shows [deleted]/[removed]) or from your
+# `purge --id`. Items not seen in any import for this many days are purged by
+# `purge --expired` and `run`. 0 = no automatic expiry.
+max_days_since_check = 0
+
+[privacy]
+store_author_names = false         # authors are not needed to judge content
+
+[classifier]
+backend = "rules"                  # local rules only; no external AI service
+select_threshold = 0.45
+min_chars = 40
+max_per_thread = 8
+max_per_collection = 40
+
+[weights]
+# Relative weights of the usefulness criteria. Votes are an auxiliary signal only.
+applicability = 0.30
+specificity = 0.20
+evidence = 0.20
+originality = 0.10
+interest = 0.20
+votes = 0.05
+
+[obsidian]
+vault_path = ""                    # e.g. "C:/Users/me/Documents/MyVault"
+folder = "Reddit Scout"            # notes go to <vault>/<folder>/r_<subreddit>/
+include_authors = false
+quote_mode = "excerpt"             # "full", "excerpt" or "none" (link + system summary only)
+excerpt_chars = 400
+
+# Interests: topics you care about. Keywords match case-insensitively (any language).
+[[interests]]
+name = "Полив"
+keywords = ["water", "watering", "drip", "irrigation", "полив", "капельн"]
+weight = 1.0
+
+[[interests]]
+name = "Почва и рассада"
+keywords = ["soil", "seedling", "coir", "perlite", "mulch", "почв", "рассад"]
+weight = 1.0
