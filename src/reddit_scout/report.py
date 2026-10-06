@@ -55,16 +55,17 @@ def coverage(store: Store, cfg: Config) -> dict:
         latest[(r["kind"], json.loads(r["params"]).get("source_id"))] = r
     for r in latest.values():
         stats = json.loads(r["stats"] or "{}")
-        gaps += [f"run #{r['id']} ({r['kind']}): {g}" for g in stats.get("gaps", [])]
+        gaps += [f"запуск #{r['id']} ({r['kind']}): {g}" for g in stats.get("gaps", [])]
         if r["status"] in ("denied", "interrupted", "failed", "running"):
-            gaps.append(f"run #{r['id']} ({r['kind']}) ended as {r['status']}: {r['stop_reason'] or 'no reason recorded'}")
+            gaps.append(f"запуск #{r['id']} ({r['kind']}) завершился со статусом {r['status']}: "
+                        f"{r['stop_reason'] or 'причина не записана'}")
     if not_loaded:
-        gaps.append(f"{not_loaded} thread(s) have no comments loaded (posts-only input)")
+        gaps.append(f"тем без загруженных комментариев: {not_loaded} (во входных данных были только публикации)")
     if partial:
-        gaps.append(f"{partial} thread(s) have incomplete comment trees ({stub_pending} pending, "
-                    f"{stub_abandoned} abandoned 'more' stubs, about {hidden_estimate} comments not loaded)")
+        gaps.append(f"неполные деревья комментариев: {partial} тем(ы); нераскрытых веток «more»: {stub_pending}, "
+                    f"брошенных: {stub_abandoned}; не загружено около {hidden_estimate} комментариев")
     if not runs:
-        gaps.append("no collection or import runs recorded yet")
+        gaps.append("импортов ещё не было")
 
     sources = [dict(s) for s in store.sources()]
     used_sources = {r[0] for r in store.db.execute(
@@ -92,21 +93,22 @@ def coverage(store: Store, cfg: Config) -> dict:
 
 
 def render_text(cov: dict) -> str:
+    dash = " — "
     lines = [
         f"r/{cov['subreddit']}",
-        f"  requested period:     {cov['requested_period']}",
-        f"  comment date filter:  {cov['comment_period'] or 'none'}",
-        f"  actual post dates:    {' — '.join(cov['actual_post_dates']) if cov['actual_post_dates'] else 'no data'}",
-        f"  actual comment dates: {' — '.join(cov['actual_comment_dates']) if cov['actual_comment_dates'] else 'no data'}",
-        f"  posts: {cov['posts']} (purged: {cov['posts_purged']})",
-        f"  comments: {cov['comments']} (purged: {cov['comments_purged']}; "
-        f"Reddit reported ≈{cov['comments_reported_by_reddit']} for these threads)",
-        f"  threads: complete {cov['threads_complete']}, partial {cov['threads_partial']}, "
-        f"without comments {cov['threads_without_comments']}",
-        "  post coverage %: unknown (total number of posts in the period is not known)",
-        "  known gaps:",
+        f"  запрошенный период:            {cov['requested_period']}",
+        f"  фильтр дат комментариев:       {cov['comment_period'] or 'нет'}",
+        f"  фактические даты публикаций:   {dash.join(cov['actual_post_dates']) if cov['actual_post_dates'] else 'нет данных'}",
+        f"  фактические даты комментариев: {dash.join(cov['actual_comment_dates']) if cov['actual_comment_dates'] else 'нет данных'}",
+        f"  тем: {cov['posts']} (удалено/очищено: {cov['posts_purged']})",
+        f"  комментариев: {cov['comments']} (удалено/очищено: {cov['comments_purged']}; "
+        f"Reddit указывал ≈{cov['comments_reported_by_reddit']} для этих тем)",
+        f"  деревья комментариев: полных {cov['threads_complete']}, неполных {cov['threads_partial']}, "
+        f"без комментариев {cov['threads_without_comments']}",
+        "  охват публикаций, %: неизвестен (общее число публикаций за период не известно)",
+        "  известные пробелы:",
     ]
-    lines += [f"    - {g}" for g in cov["gaps"]] or ["    - none recorded"]
-    lines.append("  runs:")
+    lines += [f"    - {g}" for g in cov["gaps"]] or ["    - не зафиксированы"]
+    lines.append("  запуски:")
     lines += [f"    #{r['id']} {r['kind']} {r['status']}: {r['stop_reason']}" for r in cov["runs"]]
     return "\n".join(lines)

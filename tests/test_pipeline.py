@@ -118,7 +118,7 @@ def test_incomplete_comment_tree_is_reported(store, cfg, demo_file, tmp_path, va
     assert cov["threads_partial"] == 1  # dm0001 has a "more" stub
     assert cov["threads_without_comments"] == 1
     assert cov["post_coverage_percent"] is None
-    assert any("incomplete comment trees" in g for g in cov["gaps"])
+    assert any("неполные деревья комментариев" in g for g in cov["gaps"])
     classify_all(store, cfg)
     export(store, cfg, vault)
     text = thread_note(vault, "dm0001").read_text(encoding="utf-8")
@@ -310,7 +310,7 @@ def test_cli_local_path(tmp_path, demo_file, capsys):
     assert main(["run", *common]) == 0
     assert main(["report", *common]) == 0
     out = capsys.readouterr().out
-    assert "post coverage %: unknown" in out
+    assert "охват публикаций, %: неизвестен" in out
     assert main(["search", "mulch", *common]) == 0
     assert "t1_c101" in capsys.readouterr().out
     assert main(["purge", "--id", "t1_c101", *common]) == 0

@@ -13,6 +13,9 @@ dependencies = [
 [project.scripts]
 reddit-scout = "reddit_scout.cli:main"
 
+[project.gui-scripts]
+reddit-scout-gui = "reddit_scout.gui:main"
+
 [dependency-groups]
 dev = ["pytest>=8"]
 

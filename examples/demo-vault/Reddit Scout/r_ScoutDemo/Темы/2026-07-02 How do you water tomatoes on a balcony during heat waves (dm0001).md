@@ -9,8 +9,8 @@ seen_in:
 source_basis: synthetic data created for the demo; no third-party rights involved
 url: https://www.reddit.com/r/ScoutDemo/comments/dm0001/x/
 created: '2026-07-02T12:00:00+00:00'
-fetched: '2026-10-06T03:05:35+00:00'
-last_checked: '2026-10-06T03:05:35+00:00'
+fetched: '2026-10-06T03:18:48+00:00'
+last_checked: '2026-10-06T03:18:48+00:00'
 expires: null
 categories:
 - Обсуждение без практического вывода
